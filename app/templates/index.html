@@ -1,0 +1,454 @@
+<!doctype html>
+
+<!-- Página em HTML5, com idioma português do Brasil. -->
+<html lang="pt-BR">
+  <head>
+
+    <!-- Configura acentos, adaptação ao celular, cor do navegador e título da aba. -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#07172c">
+    <title>Entrar | Valtrevo</title>
+
+    <!-- Carrega o Bootstrap e o CSS do login. url_for monta os endereços; v identifica a versão. -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/login.css', v='circuitos-2') }}" rel="stylesheet">
+
+    <!-- Carrega os efeitos e ações de login.js após ler o HTML. Mantenha os IDs usados pelo JavaScript. -->
+  </head>
+  <body>
+
+    <!-- Área principal: centraliza o login e contém o fundo animado. -->
+    <main class="login-shell container-fluid">
+
+      <!-- Cartão do login. aria-labelledby indica seu título para leitores de tela. -->
+      <section class="form-panel" aria-labelledby="login-title">
+        <div class="login-card">
+
+          <!-- Mostra a logo. Se ela não carregar, o JavaScript exibe a seta no lugar. -->
+          <div class="logo-wrap">
+            <img
+              id="brand-logo"
+              src="{{ url_for('static', filename='img/logo.png') }}"
+              alt="Logo do sistema: bússola com seta de crescimento"
+              width="96"
+              height="96"
+            >
+            <span id="logo-fallback" class="logo-fallback" aria-label="Valtrevo" hidden>↗</span>
+          </div>
+
+          <!-- Nome e frase do sistema. Altere os textos abaixo para personalizar. -->
+          <header class="login-heading">
+            <h2 id="login-title">Valtrevo</h2>
+            <p>Seus números, Suas decisões. Seus crescimentos</p>
+          </header>
+
+          <!-- Exibe mensagens enviadas pelo Flask com flash(). Jinja monta este trecho usando Python. -->
+          {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+              <div class="alert {{ 'alert-success' if category == 'success' else 'alert-danger' }}" role="alert">{{ message }}</div>
+            {% endfor %}
+          {% endwith %}
+
+
+
+
+          <!-- Envia os campos para a rota login. O JavaScript confere os dados antes do envio. -->
+          <form id="login-form" method="post" action="{{ url_for('main.login') }}" data-auth-url="{{ url_for('main.login') }}" novalidate>
+
+            <!-- Inclui o código de proteção CSRF, se disponível. O servidor também precisa conferir esse código. -->
+            {% if csrf_token is defined %}
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            {% endif %}
+
+            <!-- Campo de e-mail obrigatório. label é o rótulo; name identifica o dado enviado; SVG desenha o ícone. -->
+            <div class="mb-4">
+              <label class="form-label" for="email">E-mail</label>
+              <div class="input-wrap">
+                <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+                  <rect x="3" y="5" width="18" height="14" rx="3"/>
+                  <path d="m4 7 8 6 8-6"/>
+                </svg>
+                <input
+                  class="form-control"
+                  id="email"
+                  name="email"
+                  type="email"
+                  placeholder="voce@empresa.com.br"
+                  autocomplete="username"
+                  required
+                  maxlength="254"
+                  aria-describedby="email-error"
+                >
+              </div>
+
+              <!-- Aviso de e-mail inválido, mostrado pelo JavaScript quando necessário. -->
+              <div id="email-error" class="field-error" hidden>Informe um e-mail válido.</div>
+            </div>
+
+            <!-- Campo de senha: esconde os caracteres e permite preenchimento pelo gerenciador de senhas. -->
+            <div class="mb-3">
+              <label class="form-label" for="password">Senha</label>
+              <div class="input-wrap">
+                <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+                  <rect x="4" y="10" width="16" height="11" rx="3"/>
+                  <path d="M8 10V7a4 4 0 0 1 8 0v3"/>
+                  <path d="M12 14v3"/>
+                </svg>
+                <input
+                  class="form-control password-input"
+                  id="password"
+                  name="password"
+                  type="password"
+                  placeholder="Digite sua senha"
+                  autocomplete="current-password"
+                  required
+                  aria-describedby="password-error caps-warning"
+                >
+
+                <!-- Botão para mostrar ou esconder a senha, sem enviar o formulário. -->
+                <button
+                  class="password-toggle"
+                  id="toggle-password"
+                  type="button"
+                  aria-controls="password"
+                  aria-label="Mostrar senha"
+                  aria-pressed="false"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+                    <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                  </svg>
+                </button>
+              </div>
+
+              <!-- Avisos de senha vazia e Caps Lock ligado, controlados pelo JavaScript. -->
+              <div id="password-error" class="field-error" hidden>Informe sua senha.</div>
+              <div id="caps-warning" class="caps-warning" hidden>Caps Lock está ativado.</div>
+            </div>
+
+            <!-- Opções de acesso. Manter conectado depende do Python; recuperar senha ainda orienta a procurar o administrador. -->
+            <div class="login-options">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="1" id="remember" name="lembrar">
+                <label class="form-check-label" for="lembrar">Lembrar-me</label>
+              </div>
+              <button class="text-button" id="forgot-password" type="button">Esqueci minha senha</button>
+            </div>
+
+            <!-- Botão de entrada. O JavaScript confere os campos antes do envio e cria o efeito de clique. -->
+            <button id="submit-login" class="btn login-button w-100" type="submit">
+              <span>Entrar no sistema</span>
+              <span aria-hidden="true">→</span>
+            </button>
+
+            <!-- Área de avisos do JavaScript. aria-live permite anunciar as mensagens em leitores de tela. -->
+            <div id="login-feedback" class="login-feedback" role="status" aria-live="polite" hidden>
+            </div>
+          </form>
+
+          <!-- Orientação para quem ainda não possui acesso ao sistema. -->
+          <div class="access-note">
+            <span aria-hidden="true">◇</span>
+            <p>Precisa de acesso? <strong>Fale com o administrador.</strong></p>
+          </div>
+        </div>
+
+        <!-- Rodapé do cartão. Altere os textos abaixo para personalizar. -->
+        <footer class="login-footer">
+          <span>Portal de gestão</span>
+          <span>Um novo rumo para seus resultados.</span>
+        </footer>
+      </section>
+    </main>
+  <script>
+'use strict';
+
+// Efeitos visuais opcionais: respeitam a preferencia por menos movimento.
+const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
+const loginPanel = document.querySelector('.form-panel');
+const loginShell = document.querySelector('.login-shell');
+if (loginPanel && loginShell) {
+  const ambient = document.createElement('div');
+  ambient.className = 'ambient-lights';
+  ambient.setAttribute('aria-hidden', 'true');
+  ambient.innerHTML = '<i></i><i></i><i></i>';
+  loginShell.prepend(ambient);
+
+  if (!motionPreference.matches) {
+    loginPanel.animate([
+      { opacity: 0, transform: 'translateY(22px) scale(.98)' },
+      { opacity: 1, transform: 'translateY(0) scale(1)' }
+    ], { duration: 650, easing: 'cubic-bezier(.2,.7,.2,1)' });
+  }
+
+  let pointerFrame = 0;
+  loginPanel.addEventListener('pointermove', (event) => {
+    if (motionPreference.matches || event.pointerType !== 'mouse') return;
+    cancelAnimationFrame(pointerFrame);
+    pointerFrame = requestAnimationFrame(() => {
+      const bounds = loginPanel.getBoundingClientRect();
+      loginPanel.style.setProperty('--glow-x', `${event.clientX - bounds.left}px`);
+      loginPanel.style.setProperty('--glow-y', `${event.clientY - bounds.top}px`);
+      loginPanel.classList.add('pointer-glow');
+    });
+  });
+  loginPanel.addEventListener('pointerleave', () => {
+    cancelAnimationFrame(pointerFrame);
+    loginPanel.classList.remove('pointer-glow');
+  });
+
+  document.getElementById('submit-login').addEventListener('click', (event) => {
+    if (motionPreference.matches) return;
+    const button = event.currentTarget;
+    const bounds = button.getBoundingClientRect();
+    const ripple = document.createElement('i');
+    ripple.className = 'button-ripple';
+    ripple.setAttribute('aria-hidden', 'true');
+    ripple.style.left = `${event.detail ? event.clientX - bounds.left : bounds.width / 2}px`;
+    ripple.style.top = `${event.detail ? event.clientY - bounds.top : bounds.height / 2}px`;
+    button.append(ripple);
+    ripple.addEventListener('animationend', () => ripple.remove(), { once: true });
+    setTimeout(() => ripple.remove(), 800);
+  });
+}
+
+// Comportamentos da interface. A autenticação deve ser feita no servidor Flask.
+const form = document.getElementById('login-form');
+const email = document.getElementById('email');
+const password = document.getElementById('password');
+const toggle = document.getElementById('toggle-password');
+const feedback = document.getElementById('login-feedback');
+const submit = document.getElementById('submit-login');
+const logo = document.getElementById('brand-logo');
+
+function showLogoFallback() {
+  logo.hidden = true;
+  document.getElementById('logo-fallback').hidden = false;
+}
+logo.addEventListener('error', showLogoFallback);
+if (logo.complete && logo.naturalWidth === 0) showLogoFallback();
+
+toggle.addEventListener('click', () => {
+  const visible = password.type === 'password';
+  password.type = visible ? 'text' : 'password';
+  toggle.setAttribute('aria-pressed', String(visible));
+  toggle.setAttribute('aria-label', visible ? 'Ocultar senha' : 'Mostrar senha');
+});
+
+for (const event of ['keyup', 'keydown']) {
+  password.addEventListener(event, (e) => {
+    document.getElementById('caps-warning').hidden = !e.getModifierState('CapsLock');
+  });
+}
+password.addEventListener('blur', () => { document.getElementById('caps-warning').hidden = true; });
+
+function validate(input) {
+  const valid = input.validity.valid;
+  input.setAttribute('aria-invalid', String(!valid));
+  input.closest('.input-wrap').classList.toggle('has-error', !valid);
+  document.getElementById(input.id + '-error').hidden = valid;
+  return valid;
+}
+for (const input of [email, password]) {
+  const wrapper = input.closest('.input-wrap');
+  const updateFilledState = () => wrapper.classList.toggle('is-filled', input.value !== '');
+  updateFilledState();
+  input.addEventListener('blur', () => {
+    updateFilledState();
+    validate(input);
+  });
+  window.addEventListener('pageshow', updateFilledState);
+  input.addEventListener('input', () => {
+    updateFilledState();
+    input.removeAttribute('aria-invalid');
+    wrapper.classList.remove('has-error');
+    document.getElementById(input.id + '-error').hidden = true;
+    feedback.hidden = true;
+  });
+}
+
+document.getElementById('forgot-password').addEventListener('click', () => {
+  feedback.textContent = 'Para recuperar seu acesso, entre em contato com o administrador do sistema.';
+  feedback.hidden = false;
+});
+
+form.addEventListener('submit', (event) => {
+  email.value = email.value.trim();
+  const validEmail = validate(email);
+  const validPassword = validate(password);
+  if (!validEmail || !validPassword) {
+    event.preventDefault();
+    (!validEmail ? email : password).focus();
+    return;
+  }
+  const authUrl = form.dataset.authUrl;
+  if (!authUrl) {
+    event.preventDefault();
+    feedback.textContent = 'A página de login está pronta. O acesso será liberado após a integração da autenticação do sistema.';
+    feedback.hidden = false;
+    return;
+  }
+  form.action = authUrl;
+  submit.disabled = true;
+  submit.querySelector('span').textContent = 'Entrando…';
+});
+
+// Restaura o botão quando o navegador recupera a página pelo histórico.
+window.addEventListener('pageshow', () => {
+  submit.disabled = false;
+  submit.querySelector('span').textContent = 'Entrar no sistema';
+});
+
+// Trilhas de circuito no fundo da página de login.
+(() => {
+    const fundo = document.querySelector('.login-shell');
+    if (!fundo) return;
+
+    const canvas = document.createElement('canvas');
+    canvas.className = 'fundo-circuitos';
+    canvas.setAttribute('aria-hidden', 'true');
+    fundo.prepend(canvas);
+    const contexto = canvas.getContext('2d');
+    if (!contexto) return;
+
+    const movimentoReduzido = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let trilhas = [];
+    let largura = 0;
+    let altura = 0;
+    let quadro = 0;
+    let ultimoTempo = 0;
+    let tempo = 0;
+    const mouse = { x: 0, y: 0, ativo: false };
+    const deslocamento = { x: 0, y: 0 };
+
+    fundo.addEventListener('pointermove', (evento) => {
+        if (evento.pointerType !== 'mouse') return;
+        const limites = fundo.getBoundingClientRect();
+        mouse.x = evento.clientX - limites.left;
+        mouse.y = evento.clientY - limites.top;
+        mouse.ativo = true;
+    });
+
+    fundo.addEventListener('pointerleave', () => { mouse.ativo = false; });
+    window.addEventListener('blur', () => { mouse.ativo = false; });
+
+    function ajustarTamanho() {
+        largura = fundo.clientWidth;
+        altura = fundo.clientHeight;
+        const escala = Math.min(window.devicePixelRatio || 1, 2);
+        canvas.width = Math.round(largura * escala);
+        canvas.height = Math.round(altura * escala);
+        contexto.setTransform(escala, 0, 0, escala, 0, 0);
+        trilhas = [];
+
+        const quantidade = Math.min(36, Math.max(12, Math.floor(largura / 38)));
+        for (let i = 0; i < quantidade; i++) {
+            const x = Math.round(Math.random() * largura / 28) * 28;
+            const y = Math.round(Math.random() * altura / 28) * 28;
+            const direcao = Math.random() > 0.5 ? 1 : -1;
+            const pontos = [
+                { x, y },
+                { x: x + 56 * direcao, y },
+                { x: x + 112 * direcao, y: y + 56 },
+                { x: x + 224 * direcao, y: y + 56 },
+                { x: x + 224 * direcao, y: y + 168 }
+            ];
+            const segmentos = [];
+            let comprimento = 0;
+            for (let j = 1; j < pontos.length; j++) {
+                const inicio = pontos[j - 1];
+                const fim = pontos[j];
+                const tamanho = Math.hypot(fim.x - inicio.x, fim.y - inicio.y);
+                segmentos.push({ inicio, fim, tamanho });
+                comprimento += tamanho;
+            }
+            trilhas.push({ pontos, segmentos, comprimento, deslocamento: Math.random() * comprimento, dourada: i % 7 === 0 });
+        }
+        desenhar();
+    }
+
+    function desenhar() {
+        contexto.clearRect(0, 0, largura, altura);
+        const interativo = mouse.ativo && !movimentoReduzido.matches;
+        const alvoX = interativo ? (mouse.x / largura - 0.5) * 36 : 0;
+        const alvoY = interativo ? (mouse.y / altura - 0.5) * 36 : 0;
+        deslocamento.x += (alvoX - deslocamento.x) * 0.06;
+        deslocamento.y += (alvoY - deslocamento.y) * 0.06;
+        if (movimentoReduzido.matches) {
+            deslocamento.x = 0;
+            deslocamento.y = 0;
+        }
+        contexto.save();
+        contexto.translate(deslocamento.x, deslocamento.y);
+        for (const trilha of trilhas) {
+            const proxima = interativo && trilha.segmentos.some(({ inicio, fim, tamanho }) => {
+                const x = mouse.x - deslocamento.x;
+                const y = mouse.y - deslocamento.y;
+                const proporcao = Math.max(0, Math.min(1,
+                    ((x - inicio.x) * (fim.x - inicio.x) + (y - inicio.y) * (fim.y - inicio.y)) / (tamanho * tamanho)));
+                return Math.hypot(x - inicio.x - (fim.x - inicio.x) * proporcao,
+                    y - inicio.y - (fim.y - inicio.y) * proporcao) < 120;
+            });
+            contexto.strokeStyle = trilha.dourada ? 'rgba(232,185,67,0.16)' : 'rgba(68,185,233,0.20)';
+            if (proxima) contexto.strokeStyle = trilha.dourada ? 'rgba(232,185,67,0.65)' : 'rgba(68,185,233,0.65)';
+            contexto.lineWidth = proxima ? 1.5 : 1;
+            contexto.beginPath();
+            trilha.pontos.forEach((ponto, i) => {
+                if (i === 0) contexto.moveTo(ponto.x, ponto.y);
+                else contexto.lineTo(ponto.x, ponto.y);
+            });
+            contexto.stroke();
+
+            for (const ponto of [trilha.pontos[0], trilha.pontos[trilha.pontos.length - 1]]) {
+                contexto.beginPath();
+                contexto.arc(ponto.x, ponto.y, 3, 0, Math.PI * 2);
+                contexto.stroke();
+            }
+
+            let distancia = (tempo * 35 + trilha.deslocamento) % trilha.comprimento;
+            for (const segmento of trilha.segmentos) {
+                if (distancia > segmento.tamanho) {
+                    distancia -= segmento.tamanho;
+                    continue;
+                }
+                const proporcao = distancia / segmento.tamanho;
+                const x = segmento.inicio.x + (segmento.fim.x - segmento.inicio.x) * proporcao;
+                const y = segmento.inicio.y + (segmento.fim.y - segmento.inicio.y) * proporcao;
+                contexto.fillStyle = trilha.dourada ? '#e8b943' : '#62d4f5';
+                contexto.shadowColor = contexto.fillStyle;
+                contexto.shadowBlur = 12;
+                contexto.beginPath();
+                contexto.arc(x, y, 2, 0, Math.PI * 2);
+                contexto.fill();
+                contexto.shadowBlur = 0;
+                break;
+            }
+        }
+        contexto.restore();
+    }
+
+    function animar(agora) {
+        if (ultimoTempo) tempo += Math.min((agora - ultimoTempo) / 1000, 0.05);
+        ultimoTempo = agora;
+        desenhar();
+        quadro = requestAnimationFrame(animar);
+    }
+
+    function atualizarMovimento() {
+        cancelAnimationFrame(quadro);
+        ultimoTempo = 0;
+        if (!movimentoReduzido.matches && !document.hidden) quadro = requestAnimationFrame(animar);
+        else desenhar();
+    }
+
+    new ResizeObserver(ajustarTamanho).observe(fundo);
+    movimentoReduzido.addEventListener('change', atualizarMovimento);
+    document.addEventListener('visibilitychange', atualizarMovimento);
+    ajustarTamanho();
+    atualizarMovimento();
+})();
+
+</script>
+</body>
+</html>

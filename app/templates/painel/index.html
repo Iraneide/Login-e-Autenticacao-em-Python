@@ -1,0 +1,455 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Painel | Valtrevo</title>
+    <style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: #f3f6fa;
+    color: #173b58;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+a:focus-visible, button:focus-visible {
+    outline: 3px solid #44b9e9;
+    outline-offset: 4px;
+}
+
+.menu-lateral {
+    position: fixed;
+    inset: 0 auto 0 0;
+    width: 245px;
+    padding: 30px 20px;
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(160deg, #173e5e, #0d263f);
+    color: white;
+}
+
+.marca {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 55px;
+    font-size: 25px;
+    font-weight: bold;
+}
+
+.marca img {
+    width: 66px;
+    height: 66px;
+    object-fit: contain;
+}
+
+.marca small {
+    display: block;
+    margin-top: 6px;
+    color: #aac4d8;
+    font-size: 11px;
+    font-weight: normal;
+}
+
+.titulo-menu {
+    margin: 0 14px 16px;
+    color: #92b0c9;
+    font-size: 10px;
+    letter-spacing: 2px;
+}
+
+.link-menu {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    border-radius: 8px;
+}
+
+.link-menu span {
+    color: #58c5ee;
+    font-size: 23px;
+}
+
+.selecionado {
+    background: #ffffff12;
+    box-shadow: inset 3px 0 #44b9e9;
+}
+
+.rodape-menu {
+    margin-top: auto;
+    padding: 25px 12px 0;
+    border-top: 1px solid #ffffff20;
+}
+
+.detalhe {
+    display: block;
+    margin-bottom: 14px;
+    color: #e8b943;
+    font-size: 30px;
+}
+
+.rodape-menu p {
+    color: #a4bed2;
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+.pagina {
+    margin-left: 245px;
+}
+
+.cabecalho {
+    min-height: 88px;
+    padding: 18px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    background: white;
+    border-bottom: 1px solid #e1e9f0;
+}
+
+.caminho {
+    color: #7b8e9e;
+    font-size: 13px;
+}
+
+.caminho span {
+    margin: 0 12px;
+    color: #c0cdd8;
+}
+
+.caminho strong {
+    color: #173b58;
+    font-weight: normal;
+}
+
+.conta, .usuario {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.conta {
+    gap: 25px;
+}
+
+.usuario strong {
+    display: block;
+    max-width: 240px;
+    overflow-wrap: anywhere;
+    font-size: 13px;
+}
+
+.usuario small {
+    display: block;
+    margin-top: 5px;
+    color: #7890a3;
+    font-size: 11px;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: #eaf4fb;
+    color: #287fb6;
+    font-weight: bold;
+}
+
+.botao-sair {
+    padding: 10px 16px;
+    border: 1px solid #ecd99f;
+    border-radius: 7px;
+    background: #fff8e5;
+    color: #765913;
+    font: inherit;
+    font-size: 12px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.botao-sair:hover {
+    background: #f7e9bd;
+}
+
+.botao-sair span {
+    margin-left: 8px;
+}
+
+main {
+    max-width: 1450px;
+    margin: auto;
+    padding: 38px 40px 24px;
+}
+
+.titulo-pagina, .titulo-secao {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.titulo-pagina {
+    margin-bottom: 28px;
+}
+
+.legenda {
+    margin: 0 0 10px;
+    color: #7790a4;
+    font-size: 10px;
+    letter-spacing: 2px;
+}
+
+h1 {
+    margin: 0;
+    font-size: 30px;
+    letter-spacing: -1px;
+}
+
+.etiqueta {
+    padding: 8px 13px;
+    border: 1px solid #dce5ed;
+    border-radius: 20px;
+    color: #71889a;
+    font-size: 11px;
+}
+
+.boas-vindas {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 25px;
+    padding: 38px 45px;
+    border-top: 3px solid #44b9e9;
+    border-radius: 17px;
+    background: radial-gradient(ellipse at right, #2b6382, #12344f 80%);
+    color: white;
+}
+
+.boas-vindas .legenda {
+    color: #ebc764;
+}
+
+.boas-vindas h2 {
+    margin: 18px 0;
+    font-size: clamp(28px, 3vw, 42px);
+    line-height: 1.2;
+    letter-spacing: -1px;
+}
+
+.boas-vindas p:last-child {
+    margin-bottom: 0;
+    color: #bed3e2;
+    line-height: 1.8;
+    overflow-wrap: anywhere;
+}
+
+.boas-vindas img {
+    width: 210px;
+    height: 210px;
+    object-fit: contain;
+    filter: drop-shadow(0 12px 20px #0004);
+}
+
+.area-conteudo {
+    margin-top: 26px;
+    padding: 26px;
+    background: white;
+    border: 1px solid #e0e8f0;
+    border-radius: 13px;
+}
+
+.titulo-secao h2 {
+    margin: 0;
+    font-size: 17px;
+}
+
+.titulo-secao > span {
+    color: #7a91a4;
+    font-size: 11px;
+}
+
+.sem-dados {
+    margin-top: 25px;
+    padding: 38px 20px;
+    border: 1px dashed #d2dfeb;
+    border-radius: 10px;
+    background: #fafcfe;
+    text-align: center;
+}
+
+.icone-resumo {
+    width: 50px;
+    height: 50px;
+    margin: 0 auto 18px;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    background: #edf5fb;
+    color: #4f8fb7;
+    font-size: 28px;
+}
+
+.sem-dados h3 {
+    margin: 0 0 10px;
+    font-size: 14px;
+}
+
+.sem-dados p {
+    max-width: 370px;
+    margin: auto;
+    color: #7c91a2;
+    font-size: 12px;
+    line-height: 1.8;
+}
+
+footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    padding-top: 25px;
+    color: #7c91a2;
+    font-size: 11px;
+}
+
+@media (max-width: 1000px) {
+    .menu-lateral { width: 210px; padding: 25px 15px; }
+    .pagina { margin-left: 210px; }
+    .marca { font-size: 21px; }
+    .marca img { width: 55px; height: 55px; }
+    .cabecalho { padding: 18px 25px; }
+    .caminho { display: none; }
+    .conta { width: 100%; justify-content: space-between; }
+    main { padding: 30px 25px; }
+    .boas-vindas { padding: 30px; }
+    .boas-vindas img { width: 155px; height: 155px; }
+}
+
+@media (max-width: 700px) {
+    .menu-lateral { position: static; width: 100%; padding: 14px 18px; flex-direction: row; align-items: center; justify-content: space-between; gap: 15px; }
+    .marca { margin: 0; font-size: 20px; }
+    .marca img { width: 48px; height: 48px; }
+    .titulo-menu, .rodape-menu { display: none; }
+    .link-menu { padding: 10px; font-size: 12px; }
+    .link-menu span { display: none; }
+    .pagina { margin-left: 0; }
+    .cabecalho { min-height: 78px; padding: 16px 18px; }
+    main { padding: 26px 18px; }
+    .etiqueta { display: none; }
+    .boas-vindas { padding: 28px 24px; }
+    .boas-vindas img { width: 95px; height: 95px; }
+    .boas-vindas h2 { font-size: 27px; }
+    .area-conteudo { padding: 22px 18px; }
+}
+
+@media (max-width: 420px) {
+    .boas-vindas img { display: none; }
+    .usuario strong { max-width: 155px; }
+    .conta { gap: 10px; }
+    .titulo-secao > span { display: none; }
+}
+</style>
+</head>
+<body>
+    <!-- Menu lateral: adicione os links dos próximos módulos aqui. -->
+    <aside class="menu-lateral">
+        <a class="marca" href="{{ url_for('painel.index') }}">
+            <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo Valtrevo">
+            <span>Valtrevo<small>Portal de gestão</small></span>
+        </a>
+
+        <p class="titulo-menu">PRINCIPAL</p>
+        <nav aria-label="Menu principal">
+            <a class="link-menu selecionado" href="{{ url_for('painel.index') }}" aria-current="page">
+                <span aria-hidden="true">▦</span> Visão geral
+            </a>
+        </nav>
+
+        <div class="rodape-menu">
+            <span class="detalhe" aria-hidden="true">↗</span>
+            <strong>Um novo rumo.</strong>
+            <p>Seus números, suas decisões.</p>
+        </div>
+    </aside>
+
+    <div class="pagina">
+        <header class="cabecalho">
+            <span class="caminho">Painel <span>/</span> <strong>Visão geral</strong></span>
+
+            <div class="conta">
+                <div class="usuario">
+                    <span class="avatar" aria-hidden="true">{{ (nome or 'U')[:1] | upper }}</span>
+                    <div>
+                        <strong>{{ nome }}</strong>
+                        <small>{{ nivel }}</small>
+                    </div>
+                </div>
+                <form action="{{ url_for('painel.logout') }}" method="post">
+                    <button class="botao-sair" type="submit">Sair <span aria-hidden="true">↗</span></button>
+                </form>
+            </div>
+        </header>
+
+        <!-- Área principal: coloque o conteúdo dos módulos aqui. -->
+        <main>
+            <div class="titulo-pagina">
+                <div>
+                    <p class="legenda">SEU ESPAÇO DE GESTÃO</p>
+                    <h1>Visão geral</h1>
+                </div>
+                <span class="etiqueta">Painel inicial</span>
+            </div>
+
+            <section class="boas-vindas">
+                <div>
+                    <p class="legenda">BEM-VINDA AO VALTREVO</p>
+                    <h2>Um novo rumo para<br>seus resultados.</h2>
+                    <p>Olá, {{ nome }}! Acompanhe sua gestão por aqui.</p>
+                </div>
+                <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Bússola Valtrevo">
+            </section>
+
+            <section class="area-conteudo" aria-labelledby="titulo-resumo">
+                <div class="titulo-secao">
+                    <h2 id="titulo-resumo">Resumo do sistema</h2>
+                    <span>Visão geral</span>
+                </div>
+                <div class="sem-dados">
+                    <span class="icone-resumo" aria-hidden="true">▥</span>
+                    <h3>Nenhum indicador disponível</h3>
+                    <p>Os dados aparecerão aqui conforme os módulos forem adicionados ao sistema.</p>
+                </div>
+            </section>
+
+            <footer><strong>Valtrevo</strong><span>Seus números. Suas decisões.</span></footer>
+        </main>
+    </div>
+    <script>
+        const fimDaSessao = Date.now() + {{ tempo_restante_ms | tojson }};
+        const voltarAoLogin = () => window.location.replace({{ url_for('main.index', sessao_expirada=1) | tojson }});
+
+        window.setTimeout(voltarAoLogin, Math.max(0, fimDaSessao - Date.now()));
+        window.addEventListener('pageshow', verificarSessao);
+        document.addEventListener('visibilitychange', verificarSessao);
+
+        function verificarSessao() {
+            if (Date.now() >= fimDaSessao) voltarAoLogin();
+        }
+    </script>
+</body>
+</html>
